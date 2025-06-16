@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: 'forestfire-api'
+    static_configs:
+      - targets: ['forestfire-api.up.railway.app']
+    metrics_path: /metrics
+    scheme: https

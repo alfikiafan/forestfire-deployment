@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 import requests
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
+
+metrics = PrometheusMetrics(app)
 
 MODEL_NAME = "forestfire-prediction"
 TF_SERVING_URL = f"http://localhost:8501/v1/models/{MODEL_NAME}:predict"
@@ -18,7 +21,7 @@ def predict():
 
 @app.route("/metadata")
 def metadata():
-    res = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
+    res = requests.get(f"http://localhost:8501/v1/models/{MODEL_NAME}")
     return res.json()
 
 if __name__ == "__main__":
