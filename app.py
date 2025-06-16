@@ -1,22 +1,5 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify
 import requests
-
-import time
-
-def wait_tf_serving():
-    for _ in range(30):
-        try:
-            r = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
-            if r.status_code == 200:
-                print("✅ TensorFlow Serving is ready!")
-                return
-        except:
-            pass
-        time.sleep(1)
-    print("❌ TensorFlow Serving not responding after 30s.")
-    exit(1)
-
-wait_tf_serving()
 
 app = Flask(__name__)
 
@@ -35,36 +18,8 @@ def predict():
 
 @app.route("/metadata")
 def metadata():
-    try:
-        res = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
-        return res.json()
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route("/metrics")
-def metrics():
-    try:
-        prometheus_url = "http://localhost:8501/monitoring/prometheus/metrics"
-        response = requests.get(prometheus_url)
-        return Response(response.text, content_type="text/plain")
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route("/status")
-def status():
-    try:
-        res = requests.get(f"http://localhost:8501/v1/models/{MODEL_NAME}")
-        return res.json()
-    except Exception as e:
-        return {"error": str(e)}, 500
-
-@app.route("/tf-log")
-def tf_log():
-    try:
-        with open("/app/tfserving.err") as f:
-            return Response(f.read(), content_type="text/plain")
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    res = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
+    return res.json()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
