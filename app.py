@@ -16,5 +16,10 @@ def predict():
     response = requests.post(TF_SERVING_URL, json=data)
     return jsonify(response.json())
 
+@app.route("/metadata")
+def metadata():
+    res = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
+    return res.json()
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
