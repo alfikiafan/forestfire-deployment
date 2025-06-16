@@ -1,12 +1,20 @@
-FROM python:3.10-slim
+FROM tensorflow/serving:latest as model
+
+FROM python:3.10
 
 WORKDIR /app
 
-COPY . .
+COPY app.py .
+COPY requirements.txt .
+COPY forestfire-prediction/ /models/forestfire-prediction/
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 8000
+RUN apt-get update && apt-get install -y supervisor
 
-CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:8000", "app:app"]
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+EXPOSE 8501
+EXPOSE 5000
+
+CMD ["/usr/bin/supervisord"]

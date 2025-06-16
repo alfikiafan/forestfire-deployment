@@ -1,22 +1,18 @@
 from flask import Flask, request, jsonify
-import numpy as np
-from keras.layers import TFSMLayer
-from keras import Model, Input
-
-layer = TFSMLayer("forestfire-prediction", call_endpoint="serving_default")
-
-input_tensor = Input(shape=(12,))
-model = Model(inputs=input_tensor, outputs=layer(input_tensor))
+import requests
 
 app = Flask(__name__)
 
+MODEL_NAME = "forestfire-prediction"
+TF_SERVING_URL = f"http://localhost:8501/v1/models/{MODEL_NAME}:predict"
+
 @app.route("/")
 def home():
-    return "Forest Fire Prediction Model is Running!"
+    return "Forest Fire Prediction API is running!"
 
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
-    input_data = np.array(data["input"]).reshape(1, -1)
-    prediction = model.predict(input_data)
-    return jsonify({"prediction": prediction[0].tolist()})
+
+    response = requests.post(TF_SERVING_URL, json=data)
+    return jsonify(response.json())
