@@ -10,6 +10,7 @@ COPY requirements.txt .
 COPY monitoring_config.txt .
 COPY forestfire-prediction/ /app/forestfire-prediction/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY forestfire-prediction/ /models/model/
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
