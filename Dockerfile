@@ -1,6 +1,7 @@
-FROM tensorflow/serving as tfserving
+FROM tensorflow/serving
 
-FROM python:3.10
+RUN apt-get update && apt-get install -y \
+    python3 python3-pip supervisor
 
 WORKDIR /app
 
@@ -10,10 +11,7 @@ COPY monitoring_config.txt .
 COPY forestfire-prediction/ /app/forestfire-prediction/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-RUN pip install --no-cache-dir -r requirements.txt
-RUN apt-get update && apt-get install -y supervisor
-
-COPY --from=tfserving /usr/bin/tensorflow_model_server /usr/bin/tensorflow_model_server
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 EXPOSE 8501
 EXPOSE 5000
