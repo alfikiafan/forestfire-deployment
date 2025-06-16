@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y supervisor
 
 COPY app.py . 
 COPY monitoring_config.txt . 
-COPY forestfire-prediction/ /models/model/
+COPY forestfire-prediction/ /models/forestfire-prediction/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY --from=tfserving /usr/bin/tensorflow_model_server /usr/bin/tensorflow_model_server
