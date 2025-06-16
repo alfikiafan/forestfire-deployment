@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 import requests
 
 app = Flask(__name__)
@@ -20,6 +20,12 @@ def predict():
 def metadata():
     res = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
     return res.json()
+
+@app.route("/metrics")
+def metrics():
+    prometheus_url = "http://localhost:8501/monitoring/prometheus/metrics"
+    response = requests.get(prometheus_url)
+    return Response(response.text, content_type="text/plain")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -6,7 +6,8 @@ WORKDIR /app
 
 COPY app.py .
 COPY requirements.txt .
-COPY forestfire-prediction/ /models/forestfire-prediction/
+COPY monitoring_config.txt .
+COPY forestfire-prediction/ /app/forestfire-prediction/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN pip install --no-cache-dir -r requirements.txt
@@ -17,4 +18,4 @@ COPY --from=tfserving /usr/bin/tensorflow_model_server /usr/bin/tensorflow_model
 EXPOSE 8501
 EXPOSE 5000
 
-CMD ["/usr/bin/supervisord"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
