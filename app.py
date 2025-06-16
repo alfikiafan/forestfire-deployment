@@ -1,8 +1,12 @@
 from flask import Flask, request, jsonify
-import tensorflow as tf
 import numpy as np
+from keras.layers import TFSMLayer
+from keras import Model, Input
 
-model = tf.keras.models.load_model("forestfire-prediction")
+layer = TFSMLayer("forestfire-prediction", call_endpoint="serving_default")
+
+input_tensor = Input(shape=(12,))
+model = Model(inputs=input_tensor, outputs=layer(input_tensor))
 
 app = Flask(__name__)
 
