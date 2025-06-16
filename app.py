@@ -1,6 +1,23 @@
 from flask import Flask, request, jsonify, Response
 import requests
 
+import time
+
+def wait_tf_serving():
+    for _ in range(30):
+        try:
+            r = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
+            if r.status_code == 200:
+                print("✅ TensorFlow Serving is ready!")
+                return
+        except:
+            pass
+        time.sleep(1)
+    print("❌ TensorFlow Serving not responding after 30s.")
+    exit(1)
+
+wait_tf_serving()
+
 app = Flask(__name__)
 
 MODEL_NAME = "forestfire-prediction"
