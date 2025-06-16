@@ -41,5 +41,13 @@ def status():
     except Exception as e:
         return {"error": str(e)}, 500
 
+@app.route("/tf-log")
+def tf_log():
+    try:
+        with open("/app/tfserving.err") as f:
+            return Response(f.read(), content_type="text/plain")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
