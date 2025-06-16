@@ -18,14 +18,20 @@ def predict():
 
 @app.route("/metadata")
 def metadata():
-    res = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
-    return res.json()
+    try:
+        res = requests.get("http://localhost:8501/v1/models/forestfire-prediction")
+        return res.json()
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/metrics")
 def metrics():
-    prometheus_url = "http://localhost:8501/monitoring/prometheus/metrics"
-    response = requests.get(prometheus_url)
-    return Response(response.text, content_type="text/plain")
+    try:
+        prometheus_url = "http://localhost:8501/monitoring/prometheus/metrics"
+        response = requests.get(prometheus_url)
+        return Response(response.text, content_type="text/plain")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/status")
 def status():
