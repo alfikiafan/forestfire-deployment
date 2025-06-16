@@ -27,5 +27,13 @@ def metrics():
     response = requests.get(prometheus_url)
     return Response(response.text, content_type="text/plain")
 
+@app.route("/status")
+def status():
+    try:
+        res = requests.get(f"http://localhost:8501/v1/models/{MODEL_NAME}")
+        return res.json()
+    except Exception as e:
+        return {"error": str(e)}, 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
